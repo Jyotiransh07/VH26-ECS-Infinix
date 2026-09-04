@@ -34,3 +34,10 @@ jobs:
 
       - name: Scan with LeakGuard (Enforce Security Gate)
         run: leakguard scan sample-repo-python/
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: leakguard # 🚨 THIS BLOCKS DEPLOYMENT IF LEAKGUARD FAILS
+    steps:
+      - name: Deploy to Production
+        run: echo "🚀 Deploying to production server... (This will only run if LeakGuard passes!)"

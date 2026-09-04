@@ -2,6 +2,6 @@ def early_return(error):
     f = open("data.txt")
 
     if error:
-        return
+        return 
 
     f.close()

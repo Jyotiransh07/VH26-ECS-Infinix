@@ -46,7 +46,15 @@ class Analyzer:
         for res in resources:
             conf, reason, path = path_analyzer.analyze_resource(res)
             
-            suggestion = "Consider using a context manager (`with` statement) to automatically manage this resource."
+            if "sqlite" in res.resource_type.lower():
+                suggestion = "Consider using `with sqlite3.connect(...) as conn:` or a try/finally block to ensure the database connection closes."
+            elif "socket" in res.resource_type.lower():
+                suggestion = "Consider using `with socket.socket(...) as s:` or wrapping the socket operations in a try/finally block."
+            elif "file" in res.resource_type.lower():
+                suggestion = "Consider using a context manager (`with open(...) as f:`) to automatically manage this file."
+            else:
+                suggestion = "Consider using a context manager (`with` statement) or a `try/finally` block to ensure cleanup."
+                
             severity = "HIGH" if conf == Confidence.DEFINITE else ("MEDIUM" if conf == Confidence.LIKELY else "INFO")
             finding = Finding(
                 file=filepath,

@@ -43,7 +43,7 @@ class PathAnalyzer:
             
             if curr.is_exit:
                 if transferred:
-                    return Confidence.LIKELY, "Resource might leak (ownership transferred).", path
+                    return Confidence.LIKELY, "Resource cleanup is not guaranteed if the called function raises an exception.", path
                 elif is_crash:
                     # Ignore unhandled exceptions from non-Raise nodes as noise
                     continue
