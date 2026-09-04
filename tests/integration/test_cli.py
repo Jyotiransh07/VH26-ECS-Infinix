@@ -18,7 +18,7 @@ def test_cli_scan_safe_file():
     os.remove("temp_safe.py")
     
     assert result.returncode == 0
-    assert "LeakGuard passed" in result.stdout
+    assert "LeakGuard Passed!" in result.stdout
 
 def test_cli_scan_leak_file():
     # Create a temporary leaking file
