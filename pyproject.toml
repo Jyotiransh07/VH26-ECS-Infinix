@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "leakguard"
+version = "0.1.0"
+description = "Find the leak before production does. A Python-based static analyzer for detecting resource leaks."
+authors = [
+    {name = "Antigravity", email = "antigravity@example.com"}
+]
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "pyyaml"
+]
+
+[project.scripts]
+leakguard = "leakguard.cli:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov"
+]

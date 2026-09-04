@@ -1,0 +1,60 @@
+Metadata-Version: 2.4
+Name: leakguard
+Version: 0.1.0
+Summary: Find the leak before production does. A Python-based static analyzer for detecting resource leaks.
+Author-email: Antigravity <antigravity@example.com>
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: pyyaml
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: pytest-cov; extra == "dev"
+
+# LeakGuard
+
+**Find the leak before production does.**
+
+LeakGuard is a lightweight, explainable, path-aware Python resource-lifecycle analyzer designed to catch resource leaks before they reach production.
+
+## Features
+- **AST-based**: Uses Python's built-in `ast` module, zero regex matching.
+- **Control-flow-aware**: Analyzes paths through conditionals, loops, and exceptions.
+- **Resource-lifecycle-specific**: Focuses on resource states (open, closed, escaped).
+- **Explainable**: Output tells you exactly *why* a leak occurs and shows the path.
+- **Low-noise**: Avoids false positives by recognizing context managers (`with`) and `finally` blocks.
+- **CI-first**: Exits with 1 on definite leaks, making it easy to block bad PRs.
+
+## Installation
+
+```bash
+pip install .
+```
+
+## Usage
+
+Scan a project or file:
+```bash
+leakguard scan src/
+leakguard scan file.py
+```
+
+Choose output formats:
+```bash
+leakguard scan . --format text
+leakguard scan . --format json
+leakguard scan . --format sarif
+```
+
+## Supported Resources
+Out of the box, LeakGuard detects:
+- `open()` / `.close()` (Files)
+- `socket.socket()` / `.close()` (Sockets)
+- `sqlite3.connect()` / `.close()` (SQLite Databases)
+
+Additional rules can be added in `leakguard/rules/resources.yaml`.
+
+## CI Integration
+LeakGuard is designed to be run in CI/CD. It supports outputting SARIF format for GitHub Code Scanning, or you can just run it natively to fail your build on definite leaks. See `.github/workflows/leakguard.yml`.
+
+## Limitations
+LeakGuard focuses on intra-procedural analysis (within a single function). It does not perfectly track complex object aliasing across multiple modules. See `docs/limitations.md` for full details.

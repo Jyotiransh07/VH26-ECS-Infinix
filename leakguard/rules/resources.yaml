@@ -1,0 +1,18 @@
+resources:
+  - name: file
+    acquire:
+      - open
+    release:
+      - close
+
+  - name: socket
+    acquire:
+      - socket.socket
+    release:
+      - close
+
+  - name: sqlite_connection
+    acquire:
+      - sqlite3.connect
+    release:
+      - close
