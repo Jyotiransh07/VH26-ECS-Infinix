@@ -111,3 +111,17 @@ If you are an advanced user or integrating LeakGuard into a CI/CD pipeline, Leak
 - **SARIF:** `leakguard scan . --format sarif` (Perfect for GitHub Security/Code Scanning!)
 
 By default, LeakGuard tracks Files, Sockets, and SQLite3 connections, but you can configure it to track anything in `leakguard/rules/resources.yaml`.
+
+---
+
+## ⚠️ Limitations (What LeakGuard Cannot Do)
+
+Static analysis of dynamic languages like Python is inherently difficult. LeakGuard is designed to catch common structural mistakes (like missing closes on error paths), but it has fundamental limitations. **We do not pretend these are fully solved.**
+
+LeakGuard struggles with or does not support:
+1. **Interprocedural Analysis:** If you open a file in Function A and pass it to Function B to close it, LeakGuard will flag it as a `LIKELY` leak in Function A because it loses track of ownership.
+2. **Complex Aliasing & Reassignment:** Storing resources in complex data structures (lists, dicts) or dynamically rebinding them confuses the path analyzer.
+3. **Dynamic Python Behavior:** Reflection (`getattr`), monkey patching, and dynamic resource creation (`eval()`) bypass detection.
+4. **Concurrency:** Threading or async behavior where resources are shared across contexts is not modeled in the Control Flow Graph.
+
+*Note: LeakGuard is a lightweight, explainable, path-aware Python resource-lifecycle analyzer designed to catch resource leaks before they reach production. It is **not** a replacement for enterprise tools like CodeQL, Semgrep, or SonarQube.*

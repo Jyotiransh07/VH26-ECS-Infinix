@@ -37,14 +37,14 @@ def generate_sarif_report(findings: List[Finding]) -> str:
                 "tool": {
                     "driver": {
                         "name": "LeakGuard",
-                        "informationUri": "https://github.com/example/leakguard",
+                        "informationUri": "https://github.com/Jyotiransh07/VH26-ECS-Infinix",
                         "rules": [
                             {
                                 "id": "RESOURCE_LEAK",
                                 "shortDescription": {
                                     "text": "Resource leak detected."
                                 },
-                                "helpUri": "https://github.com/example/leakguard"
+                                "helpUri": "https://github.com/Jyotiransh07/VH26-ECS-Infinix"
                             }
                         ]
                     }
