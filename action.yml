@@ -1,0 +1,38 @@
+name: 'LeakGuard Static Analyzer'
+description: 'Finds resource leaks in your Python code before they hit production.'
+branding:
+  icon: 'shield'
+  color: 'blue'
+
+inputs:
+  target_dir:
+    description: 'Directory to scan for leaks'
+    required: true
+    default: '.'
+  fail_on_leak:
+    description: 'Whether to fail the build if a leak is found'
+    required: false
+    default: 'true'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install LeakGuard
+      shell: bash
+      run: |
+        pip install .
+        
+    - name: Run LeakGuard Analysis
+      shell: bash
+      run: |
+        echo "Running LeakGuard on ${{ inputs.target_dir }}..."
+        if [ "${{ inputs.fail_on_leak }}" = "true" ]; then
+          leakguard scan ${{ inputs.target_dir }}
+        else
+          leakguard scan ${{ inputs.target_dir }} || true
+        fi
