@@ -23,5 +23,14 @@ jobs:
       - name: Run Pytest
         run: pytest
 
-      - name: Self-Scan LeakGuard
-        run: leakguard scan leakguard/
+      - name: Scan with LeakGuard (SARIF)
+        run: leakguard scan sample-repo-python/ --format sarif > leakguard-results.sarif
+        continue-on-error: true
+
+      - name: Upload SARIF to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: leakguard-results.sarif
+
+      - name: Scan with LeakGuard (Enforce Security Gate)
+        run: leakguard scan sample-repo-python/
