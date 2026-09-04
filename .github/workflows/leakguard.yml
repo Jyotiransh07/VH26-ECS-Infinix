@@ -15,8 +15,13 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install LeakGuard
-        run: pip install .
+      - name: Install dependencies
+        run: |
+          pip install .
+          pip install pytest pytest-cov
 
-      - name: Run LeakGuard
-        run: leakguard scan .
+      - name: Run Pytest
+        run: pytest
+
+      - name: Self-Scan LeakGuard
+        run: leakguard scan leakguard/
