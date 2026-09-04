@@ -1,5 +1,7 @@
-def test():
+def early_return(error):
     f = open("data.txt")
-    if True:
+
+    if error:
         return
+
     f.close()

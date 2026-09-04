@@ -30,29 +30,25 @@ class PathAnalyzer:
         if not start_node:
             return Confidence.UNKNOWN, "Could not locate acquisition in CFG.", []
 
-        # Start BFS from normal successors of acquisition node
-        # queue elements: (cfg_node, path, transferred)
         queue = deque()
         for nxt in start_node.next:
-            queue.append((nxt, [], False))
+            queue.append((nxt, [], False, False)) # (node, path, transferred, is_crash)
+        for nxt in start_node.exception_next:
+            queue.append((nxt, [], False, not isinstance(start_node.ast_node, ast.Raise)))
             
         visited = set()
         
         while queue:
-            curr, path, transferred = queue.popleft()
+            curr, path, transferred, is_crash = queue.popleft()
             
-            # Record location
-            new_path = list(path)
-            if curr.ast_node and hasattr(curr.ast_node, 'lineno'):
-                loc = Location(curr.ast_node.lineno, curr.ast_node.col_offset)
-                if not new_path or new_path[-1].line != loc.line:
-                    new_path.append(loc)
-                    
             if curr.is_exit:
                 if transferred:
-                    return Confidence.LIKELY, "Resource might leak (ownership transferred).", new_path
+                    return Confidence.LIKELY, "Resource might leak (ownership transferred).", path
+                elif is_crash:
+                    # Ignore unhandled exceptions from non-Raise nodes as noise
+                    continue
                 else:
-                    return Confidence.DEFINITE, "Early return or branch bypasses resource cleanup.", new_path
+                    return Confidence.DEFINITE, "Early return or branch bypasses resource cleanup.", path
                     
             is_closed = False
             
@@ -75,35 +71,42 @@ class PathAnalyzer:
                         if cleanup.variable_name == resource.variable_name:
                             is_closed = True
                             break
-                        
+                            
                 # Check for reassignment
                 if isinstance(curr.ast_node, ast.Assign) and curr.ast_node != resource.acquisition_node:
                     for target in curr.ast_node.targets:
                         if isinstance(target, ast.Name) and target.id == resource.variable_name:
-                            return Confidence.DEFINITE, "Resource variable is reassigned before cleanup, losing the reference.", new_path
-
+                            return Confidence.DEFINITE, "Resource variable is reassigned before cleanup, losing the reference.", path
+                            
                 # Check for ownership transfer
-                if isinstance(curr.ast_node, (ast.Call, ast.Expr, ast.Assign)):
-                    call_node = None
-                    if isinstance(curr.ast_node, ast.Call):
-                        call_node = curr.ast_node
-                    elif isinstance(curr.ast_node, ast.Expr) and isinstance(curr.ast_node.value, ast.Call):
-                        call_node = curr.ast_node.value
-                    elif isinstance(curr.ast_node, ast.Assign) and isinstance(curr.ast_node.value, ast.Call):
-                        call_node = curr.ast_node.value
-                        
-                    if call_node:
-                        for arg in call_node.args:
-                            if isinstance(arg, ast.Name) and arg.id == resource.variable_name:
-                                transferred = True
-                    
+                if isinstance(curr.ast_node, (ast.Call, ast.Expr, ast.Assign, ast.Return)):
+                    for node in stmt_nodes:
+                        if isinstance(node, ast.Call):
+                            for arg in node.args:
+                                if isinstance(arg, ast.Name) and arg.id == resource.variable_name:
+                                    transferred = True
+            
             if is_closed:
-                continue 
+                continue
                 
-            for nxt in curr.next + curr.exception_next:
-                state_key = (nxt.id, transferred)
+            new_path = list(path)
+            if curr.ast_node and hasattr(curr.ast_node, 'lineno'):
+                loc = Location(curr.ast_node.lineno, curr.ast_node.col_offset)
+                if not new_path or new_path[-1].line != loc.line:
+                    new_path.append(loc)
+                
+            for nxt in curr.next:
+                state_key = (nxt.id, transferred, False)
                 if state_key not in visited:
                     visited.add(state_key)
-                    queue.append((nxt, new_path, transferred))
+                    queue.append((nxt, new_path, transferred, False))
+                    
+            for nxt in curr.exception_next:
+                if nxt not in curr.next:
+                    is_new_crash = is_crash or (curr.ast_node is not None and not isinstance(curr.ast_node, ast.Raise))
+                    state_key = (nxt.id, transferred, is_new_crash)
+                    if state_key not in visited:
+                        visited.add(state_key)
+                        queue.append((nxt, new_path, transferred, is_new_crash))
                     
         return Confidence.SAFE, "Resource is safely cleaned up on all paths.", []

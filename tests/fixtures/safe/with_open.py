@@ -1,3 +1,3 @@
-def test():
+def safe_context_manager():
     with open("data.txt") as f:
-        pass
+        data = f.read()
