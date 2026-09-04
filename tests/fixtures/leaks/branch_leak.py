@@ -1,6 +1,5 @@
-import socket
+def branch_leak(condition):
+    f = open("data.txt")
 
-def test():
-    sock = socket.socket()
-    if True:
-        sock.close()
+    if condition:
+        f.close()

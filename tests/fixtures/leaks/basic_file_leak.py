@@ -1,3 +1,4 @@
-def test():
+def basic_file_leak():
     f = open("data.txt")
-    # No close
+    data = f.read()
+    print(data)

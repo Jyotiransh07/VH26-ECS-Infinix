@@ -1,9 +1,7 @@
-def process(f):
-    pass
-    
-def test():
+def finally_close():
     f = open("data.txt")
+
     try:
-        process(f)
+        process_data(f)
     finally:
         f.close()

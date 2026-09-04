@@ -16,7 +16,7 @@ class Finding:
     suggestion: str
     
     def __str__(self):
-        path_str = " \u2192 ".join([str(loc.line) for loc in self.path]) + " \u2192 EXIT" if self.path else "EXIT"
+        path_str = " -> ".join([str(loc.line) for loc in self.path]) + " -> EXIT" if self.path else "EXIT"
         
         return (f"[{self.severity}] {self.confidence.name} RESOURCE LEAK\n\n"
                 f"File: {self.file}\n"

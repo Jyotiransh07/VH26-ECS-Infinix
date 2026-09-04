@@ -1,6 +1,7 @@
-def test():
+def both_branches_close(condition):
     f = open("data.txt")
-    if True:
+
+    if condition:
         f.close()
     else:
         f.close()

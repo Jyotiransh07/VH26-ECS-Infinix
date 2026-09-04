@@ -46,22 +46,20 @@ class Analyzer:
         for res in resources:
             conf, reason, path = path_analyzer.analyze_resource(res)
             
-            # Suggestion
             suggestion = "Consider using a context manager (`with` statement) to automatically manage this resource."
-            if conf != Confidence.SAFE:
-                severity = "HIGH" if conf == Confidence.DEFINITE else "MEDIUM"
-                finding = Finding(
-                    file=filepath,
-                    resource_type=res.resource_type,
-                    variable_name=res.variable_name,
-                    acquisition_location=res.location,
-                    reason=reason,
-                    severity=severity,
-                    confidence=conf,
-                    path=path,
-                    suggestion=suggestion
-                )
-                findings.append(finding)
+            severity = "HIGH" if conf == Confidence.DEFINITE else ("MEDIUM" if conf == Confidence.LIKELY else "INFO")
+            finding = Finding(
+                file=filepath,
+                resource_type=res.resource_type,
+                variable_name=res.variable_name,
+                acquisition_location=res.location,
+                reason=reason,
+                severity=severity,
+                confidence=conf,
+                path=path,
+                suggestion=suggestion
+            )
+            findings.append(finding)
                 
         return findings
 
