@@ -1,0 +1,165 @@
+{
+  "name": "leakguard-vscode",
+  "displayName": "LeakGuard",
+  "description": "Static resource leak detection directly inside VS Code.",
+  "version": "0.0.1",
+  "publisher": "leakguard",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Jyotiransh07/VH26-ECS-Infinix"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Linters",
+    "Programming Languages"
+  ],
+  "keywords": [
+    "python",
+    "resource-leak",
+    "static-analysis",
+    "linter",
+    "security"
+  ],
+  "activationEvents": [
+    "onLanguage:python",
+    "onCommand:leakguard.scanFile",
+    "onCommand:leakguard.scanWorkspace",
+    "onCommand:leakguard.openDashboard",
+    "onCommand:leakguard.clearResults",
+    "onCommand:leakguard.exportReport",
+    "onCommand:leakguard.exportSarif",
+    "onView:leakguard.issuesView"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "leakguard-explorer",
+          "title": "LeakGuard",
+          "icon": "resources/shield.svg"
+        }
+      ]
+    },
+    "views": {
+      "leakguard-explorer": [
+        {
+          "id": "leakguard.issuesView",
+          "name": "LeakGuard Issues"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "leakguard.scanFile",
+        "title": "Scan Current File",
+        "category": "LeakGuard"
+      },
+      {
+        "command": "leakguard.scanWorkspace",
+        "title": "Scan Workspace",
+        "category": "LeakGuard"
+      },
+      {
+        "command": "leakguard.openDashboard",
+        "title": "Open Dashboard",
+        "category": "LeakGuard"
+      },
+      {
+        "command": "leakguard.clearResults",
+        "title": "Clear Results",
+        "category": "LeakGuard"
+      },
+      {
+        "command": "leakguard.exportReport",
+        "title": "Export Report",
+        "category": "LeakGuard"
+      },
+      {
+        "command": "leakguard.exportSarif",
+        "title": "Export SARIF Report",
+        "category": "LeakGuard"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "leakguard.scanFile",
+        "key": "ctrl+shift+l",
+        "mac": "cmd+shift+l",
+        "when": "editorTextFocus && editorLangId == python"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "LeakGuard",
+      "properties": {
+        "leakguard.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable or disable LeakGuard static analysis."
+        },
+        "leakguard.scanOnSave": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically scan Python files with LeakGuard when saved."
+        },
+        "leakguard.scanWorkspaceOnOpen": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically scan the entire workspace for resource leaks when opened."
+        },
+        "leakguard.pythonPath": {
+          "type": "string",
+          "default": "",
+          "description": "Custom path to the Python interpreter to execute LeakGuard."
+        },
+        "leakguard.cliPath": {
+          "type": "string",
+          "default": "",
+          "description": "Custom path to the LeakGuard CLI executable."
+        },
+        "leakguard.severityThreshold": {
+          "type": "string",
+          "enum": ["INFO", "MEDIUM", "HIGH"],
+          "default": "INFO",
+          "description": "Minimum severity level to display in Diagnostics and the Problems panel."
+        },
+        "leakguard.showStatusBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show LeakGuard status indicator and issue counts in the status bar."
+        },
+        "leakguard.autoOpenDashboard": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically open the LeakGuard Security Dashboard when critical leaks are discovered."
+        },
+        "leakguard.configPath": {
+          "type": "string",
+          "default": "",
+          "description": "Optional custom path to the resources.yaml configuration file."
+        },
+        "leakguard.timeout": {
+          "type": "number",
+          "default": 15000,
+          "description": "Maximum milliseconds to wait for a LeakGuard scan process before timing out."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "test": "npm run compile && node --test out/test/parser.test.js out/test/scanner.test.js",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^2.24.0",
+    "typescript": "^5.3.3"
+  }
+}
