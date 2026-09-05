@@ -2,6 +2,8 @@ resources:
   - name: file
     acquire:
       - open
+      - tempfile.TemporaryFile
+      - tempfile.NamedTemporaryFile
     release:
       - close
 
@@ -16,3 +18,115 @@ resources:
       - sqlite3.connect
     release:
       - close
+
+  - name: postgres_connection
+    acquire:
+      - psycopg2.connect
+    release:
+      - close
+
+  - name: mysql_connection
+    acquire:
+      - mysql.connector.connect
+    release:
+      - close
+
+  - name: redis_connection
+    acquire:
+      - redis.Redis
+      - redis.StrictRedis
+    release:
+      - close
+
+  - name: http_client
+    acquire:
+      - httpx.Client
+      - httpx.AsyncClient
+      - aiohttp.ClientSession
+      - urllib.request.urlopen
+    release:
+      - close
+
+  - name: thread_lock
+    acquire:
+      - threading.Lock
+      - threading.RLock
+    release:
+      - release
+
+  - name: multiprocessing_pool
+    acquire:
+      - multiprocessing.Pool
+    release:
+      - close
+      - terminate
+
+  - name: mongodb_client
+    acquire:
+      - pymongo.MongoClient
+    release:
+      - close
+
+  - name: sqlalchemy_engine
+    acquire:
+      - sqlalchemy.create_engine
+    release:
+      - dispose
+
+  - name: sqlalchemy_session
+    acquire:
+      - sqlalchemy.orm.Session
+      - sessionmaker
+    release:
+      - close
+
+  - name: aws_boto3_client
+    acquire:
+      - boto3.client
+      - boto3.resource
+    release:
+      - close
+
+  - name: gcp_bigquery_client
+    acquire:
+      - google.cloud.bigquery.Client
+    release:
+      - close
+
+  - name: selenium_webdriver
+    acquire:
+      - webdriver.Chrome
+      - webdriver.Firefox
+      - webdriver.Edge
+      - webdriver.Safari
+    release:
+      - quit
+      - close
+
+  - name: playwright_browser
+    acquire:
+      - playwright.sync_api.sync_playwright
+      - async_playwright
+      - browser.new_context
+      - browser.new_page
+    release:
+      - close
+
+  - name: ssh_connection
+    acquire:
+      - paramiko.SSHClient
+    release:
+      - close
+
+  - name: airflow_dag_run
+    acquire:
+      - DagRun.create(dag_id=..., execution_date=...)
+    release:
+      - set_state( DagRunState.FAILED)
+
+  - name: k8s_client
+    acquire:
+      - kubernetes.client.ApiClient
+    release:
+      - close
+
