@@ -1,0 +1,88 @@
+:root {
+  --background: #0b0d13;
+  --foreground: #f3f4f6;
+}
+
+body {
+  background-color: #0b0d13;
+  color: #f3f4f6;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Custom Sleek Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0d1017;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1f2433;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #2e364d;
+}
+
+/* Glass & Card Effects */
+.glass-panel {
+  background: rgba(18, 21, 30, 0.75);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.card-elevated {
+  background: #131620;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-elevated:hover {
+  border-color: rgba(139, 92, 246, 0.25);
+  transform: translateY(-1px);
+}
+
+.card-highlight {
+  background: #171b26;
+}
+
+.shadow-glow {
+  box-shadow: 0 0 25px -5px rgba(139, 92, 246, 0.3);
+}
+
+.shadow-glow-red {
+  box-shadow: 0 0 25px -5px rgba(244, 63, 94, 0.25);
+}
+
+.text-primary-light {
+  color: #a78bfa;
+}
+
+.bg-primary {
+  background-color: #8b5cf6;
+}
+
+.bg-primary-hover {
+  background-color: #7c3aed;
+}
+
+.border-primary {
+  border-color: #8b5cf6;
+}
+
+/* Code viewer line numbers */
+.code-line-highlight {
+  background-color: rgba(244, 63, 94, 0.15);
+  border-left: 3px solid #f43f5e;
+}
+
+.code-line-acq {
+  background-color: rgba(139, 92, 246, 0.15);
+  border-left: 3px solid #8b5cf6;
+}
