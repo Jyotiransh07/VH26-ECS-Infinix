@@ -26,6 +26,7 @@ interface ActiveScanModalProps {
   onClose: () => void;
   onScanComplete: (scan: ScanResult) => void;
   onViewFinding?: (findingId: string) => void;
+  onNavigate?: (path: string) => void;
 }
 
 const PIPELINE_STAGES = [
@@ -45,7 +46,8 @@ export const ActiveScanModal: React.FC<ActiveScanModalProps> = ({
   isOpen,
   onClose,
   onScanComplete,
-  onViewFinding
+  onViewFinding,
+  onNavigate
 }) => {
   const [targetPath, setTargetPath] = useState('sample-repo-python');
   const [projectName, setProjectName] = useState('sample-repo-python');
@@ -320,17 +322,30 @@ export const ActiveScanModal: React.FC<ActiveScanModalProps> = ({
               </div>
             )}
 
-            <div className="flex justify-between items-center pt-3 border-t border-white/5">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-3 pt-3 border-t border-white/5">
               <span className="text-xs text-zinc-500 font-mono">Scan ID: {completedScan.id}</span>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <Button variant="secondary" size="sm" onClick={onClose}>Close</Button>
+                {completedScan.findings.length > 0 && (
+                  <Button 
+                    variant="secondary" 
+                    size="sm" 
+                    onClick={() => {
+                      onClose();
+                      if (onNavigate) onNavigate('/findings');
+                    }}
+                  >
+                    View All Findings ({completedScan.findings.length})
+                  </Button>
+                )}
                 <Button 
                   size="sm" 
                   onClick={() => {
                     onClose();
+                    if (onNavigate) onNavigate('/app');
                   }}
                 >
-                  View Dashboard
+                  Go to Dashboard
                 </Button>
               </div>
             </div>

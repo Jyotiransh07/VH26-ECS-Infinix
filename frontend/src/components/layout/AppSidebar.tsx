@@ -166,12 +166,18 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
                 const Icon = item.icon;
                 const isActive = currentTab === item.id || 
                   (item.id === 'admin-overview' && (currentTab === 'admin' || currentTab === 'admin-overview')) ||
-                  (item.id === 'findings' && currentTab === 'finding-detail');
+                  (item.id === 'findings' && (currentTab === 'findings' || currentTab === 'findings/detail')) ||
+                  (item.id === 'actions' && (currentTab === 'actions' || currentTab === 'integrations/github-actions')) ||
+                  (item.id === 'precommit' && (currentTab === 'precommit' || currentTab === 'integrations/pre-commit')) ||
+                  (item.id === 'cli' && (currentTab === 'cli' || currentTab === 'integrations/cli'));
                 return (
                   <button
                     key={item.id}
                     onClick={() => {
-                      onNavigate(item.id);
+                      if (item.id === 'actions') onNavigate('integrations/github-actions');
+                      else if (item.id === 'precommit') onNavigate('integrations/pre-commit');
+                      else if (item.id === 'cli') onNavigate('integrations/cli');
+                      else onNavigate(item.id);
                       if (window.innerWidth < 1024) onClose();
                     }}
                     className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] font-medium transition-colors cursor-pointer ${

@@ -1,4 +1,6 @@
 const http = require('http');
+const fs = require('fs');
+const os = require('os');
 const url = require('url');
 const pathModule = require('path');
 const { LeakGuardScannerAdapter } = require('../scanner-adapter/adapter.cjs');
@@ -401,6 +403,107 @@ const server = http.createServer(async (req, res) => {
   }
 
   // 4. Scans API
+
+  // SSE Real-Time Scan Stage Events
+  if (path.startsWith('/api/scans/') && path.endsWith('/events') && method === 'GET') {
+    const parts = path.split('/');
+    const targetScanId = parts[3];
+
+    res.writeHead(200, {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+      'Access-Control-Allow-Origin': '*'
+    });
+    res.write(`data: ${JSON.stringify({ type: 'CONNECTED', scan_id: targetScanId, timestamp: new Date().toISOString() })}\n\n`);
+
+    const stageListener = (event) => {
+      if (!targetScanId || event.scan_id === targetScanId || targetScanId === 'latest') {
+        res.write(`data: ${JSON.stringify(event)}\n\n`);
+      }
+    };
+
+    adapter.scanEvents.on('scan_event', stageListener);
+
+    req.on('close', () => {
+      adapter.scanEvents.removeListener('scan_event', stageListener);
+      res.end();
+    });
+    return;
+  }
+
+  // Cancel in-flight scan
+  if (path.startsWith('/api/scans/') && path.endsWith('/cancel') && method === 'POST') {
+    const parts = path.split('/');
+    const scanId = parts[3];
+    const cancelled = adapter.cancelScan(scanId);
+    return jsonResponse(200, {
+      status: cancelled ? 'CANCELLED' : 'NOT_FOUND_OR_ALREADY_FINISHED',
+      scan_id: scanId
+    });
+  }
+
+  // Get specific scan by ID
+  if (path.startsWith('/api/scans/') && method === 'GET' && !path.endsWith('/events')) {
+    const parts = path.split('/');
+    const scanId = parts[3];
+    const scan = adapter.getAllScans().find(s => s.id === scanId);
+    if (!scan) {
+      return jsonResponse(404, { error: 'Scan not found', scan_id: scanId });
+    }
+    return jsonResponse(200, scan);
+  }
+
+  // Upload custom file/files for pure static analysis
+  if (path === '/api/scans/upload' && method === 'POST') {
+    const body = await getRequestBody();
+    const scanId = `upload-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+    const tempDir = pathModule.join(__dirname, '..', 'temp_scans', scanId);
+
+    try {
+      if (!fs.existsSync(pathModule.join(__dirname, '..', 'temp_scans'))) {
+        fs.mkdirSync(pathModule.join(__dirname, '..', 'temp_scans'), { recursive: true });
+      }
+      fs.mkdirSync(tempDir, { recursive: true });
+
+      // Support multi-file or single-file payload
+      if (Array.isArray(body.files) && body.files.length > 0) {
+        for (const fileObj of body.files) {
+          const safeRelPath = fileObj.path.replace(/^(\.\.[\/\\])+/, '');
+          const destPath = pathModule.join(tempDir, safeRelPath);
+          fs.mkdirSync(pathModule.dirname(destPath), { recursive: true });
+          fs.writeFileSync(destPath, fileObj.content, 'utf-8');
+        }
+      } else if (body.filename && body.content) {
+        const destPath = pathModule.join(tempDir, pathModule.basename(body.filename));
+        fs.writeFileSync(destPath, body.content, 'utf-8');
+      } else {
+        return jsonResponse(400, { error: 'Missing files or content in payload' });
+      }
+
+      const scanResult = await adapter.executeScan(tempDir, {
+        repositoryId: body.repository_id || 'custom-upload',
+        repositoryName: body.repository_name || (body.filename || 'uploaded-files'),
+        branch: body.branch || 'workspace',
+        commitSha: scanId.slice(-7)
+      });
+
+      // Cleanup tempDir after scan
+      try {
+        fs.rmSync(tempDir, { recursive: true, force: true });
+      } catch (rmErr) {
+        console.warn('Temp clean warning:', rmErr);
+      }
+
+      return jsonResponse(200, scanResult);
+    } catch (err) {
+      try {
+        fs.rmSync(tempDir, { recursive: true, force: true });
+      } catch (_) {}
+      return jsonResponse(500, { error: 'Static analysis failed', details: err.message });
+    }
+  }
+
   if (path === '/api/scans' && method === 'GET') {
     return jsonResponse(200, adapter.getAllScans());
   }

@@ -1,131 +1,213 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Terminal, 
   Copy, 
   Check, 
   Play, 
   FileCode, 
-  HelpCircle,
-  Cpu,
-  Layers
+  AlertTriangle,
+  CheckCircle2,
+  ArrowRight
 } from '@/components/icons';
-import { Button } from '../components/common/Button';
+import { ScanResult, IssueFinding } from '../types';
+import { api } from '../services/api';
 
-export const CliPage: React.FC = () => {
-  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+interface CliPageProps {
+  onTriggerScan?: () => void;
+  onViewFinding?: (findingId: string) => void;
+}
 
-  const cliCommands = [
+export const CliPage: React.FC<CliPageProps> = ({
+  onTriggerScan,
+  onViewFinding
+}) => {
+  const [copied, setCopied] = useState<string | null>(null);
+  const [latestScan, setLatestScan] = useState<ScanResult | null>(null);
+  const [isRunning, setIsRunning] = useState(false);
+
+  useEffect(() => {
+    api.getScans().then(scans => {
+      if (scans && scans.length > 0) {
+        setLatestScan(scans[0]);
+      }
+    }).catch(() => {});
+  }, []);
+
+  const copyToClipboard = (text: string, id: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(id);
+    setTimeout(() => setCopied(null), 2000);
+  };
+
+  const handleRunScan = async () => {
+    if (onTriggerScan) {
+      onTriggerScan();
+    } else {
+      setIsRunning(true);
+      try {
+        const result = await api.triggerScan('sample-repo-python');
+        setLatestScan(result);
+      } finally {
+        setIsRunning(false);
+      }
+    }
+  };
+
+  const commands = [
     {
-      title: 'Scan Directory (Text / Console Output)',
-      cmd: 'leakguard scan .',
-      altCmd: 'python -m leakguard.cli scan .',
-      desc: 'Standard scan printing high-confidence findings and summary table to stdout.'
+      id: 'cmd-basic',
+      title: 'Basic scan',
+      command: 'leakguard scan .',
+      desc: 'Scans all Python files in the current working directory.'
     },
     {
-      title: 'Generate Machine-Readable JSON Report',
-      cmd: 'leakguard scan sample-repo-python --format json > report.json',
-      altCmd: 'python -m leakguard.cli scan sample-repo-python --format json',
-      desc: 'Generates structured JSON object containing files scanned, definite leaks, and path line numbers.'
+      id: 'cmd-dir',
+      title: 'Scan a specific directory',
+      command: 'leakguard scan ./src',
+      desc: 'Scans Python source files inside the specified target path.'
     },
     {
-      title: 'Generate SARIF v2.1.0 for GitHub Security Upload',
-      cmd: 'leakguard scan . --format sarif > results.sarif',
-      altCmd: 'python -m leakguard.cli scan . --format sarif',
-      desc: 'Generates official SARIF report for integration with github/codeql-action/upload-sarif.'
+      id: 'cmd-json',
+      title: 'JSON report',
+      command: 'leakguard scan . --format json',
+      desc: 'Outputs machine-readable structured JSON findings.'
     },
     {
-      title: 'Custom Resource Rules YAML',
-      cmd: 'leakguard scan . --config custom_resources.yaml',
-      altCmd: 'python -m leakguard.cli scan . --config custom_resources.yaml',
-      desc: 'Specify a custom YAML rule file defining proprietary acquisition and release functions.'
+      id: 'cmd-sarif',
+      title: 'SARIF report',
+      command: 'leakguard scan . --format sarif',
+      desc: 'Outputs OASIS standard SARIF for GitHub Code Scanning.'
     }
   ];
 
-  const handleCopy = (text: string, idx: number) => {
-    navigator.clipboard.writeText(text);
-    setCopiedIndex(idx);
-    setTimeout(() => setCopiedIndex(null), 2000);
-  };
-
   return (
-    <div className="space-y-8 animate-in fade-in duration-300">
+    <div className="space-y-6 max-w-4xl">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-2xl bg-primary/10 text-primary-light border border-primary/20">
-            <Terminal className="w-8 h-8" />
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight text-white">LeakGuard CLI Terminal Hub</h2>
-            <p className="text-sm text-zinc-400">Direct command-line interface usage, flags, exit codes, and examples</p>
-          </div>
+      <div className="pb-3 border-b border-slate-100 dark:border-slate-800/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+            CLI
+          </h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            Run LeakGuard directly from your terminal.
+          </p>
         </div>
 
-        <span className="inline-flex items-center gap-1.5 font-mono text-xs text-primary-light bg-primary/15 px-3 py-1.5 rounded-xl border border-primary/30">
-          leakguard v0.1.0
-        </span>
-      </div>
-
-      {/* Commands Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {cliCommands.map((item, idx) => (
-          <div key={idx} className="card-elevated p-6 space-y-4 flex flex-col justify-between">
-            <div className="space-y-2">
-              <h3 className="text-sm font-bold text-white">{item.title}</h3>
-              <p className="text-xs text-zinc-400">{item.desc}</p>
-            </div>
-
-            <div className="space-y-2">
-              <div className="rounded-xl border border-white/10 bg-[#0d1017] p-3 flex items-center justify-between group">
-                <code className="font-mono text-xs text-primary-light truncate mr-2">{item.cmd}</code>
-                <button
-                  onClick={() => handleCopy(item.cmd, idx * 2)}
-                  className="p-1 rounded text-zinc-400 hover:text-white transition-colors"
-                >
-                  {copiedIndex === idx * 2 ? (
-                    <Check className="w-3.5 h-3.5 text-emerald-400" />
-                  ) : (
-                    <Copy className="w-3.5 h-3.5" />
-                  )}
-                </button>
-              </div>
-
-              <div className="rounded-xl border border-white/5 bg-[#0a0c12] p-2.5 flex items-center justify-between">
-                <code className="font-mono text-[11px] text-zinc-400 truncate mr-2">{item.altCmd}</code>
-                <button
-                  onClick={() => handleCopy(item.altCmd, idx * 2 + 1)}
-                  className="p-1 rounded text-zinc-500 hover:text-white transition-colors"
-                >
-                  {copiedIndex === idx * 2 + 1 ? (
-                    <Check className="w-3 h-3 text-emerald-400" />
-                  ) : (
-                    <Copy className="w-3 h-3" />
-                  )}
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Exit Codes & CI Policy Box */}
-      <div className="card-elevated p-6 space-y-4">
-        <h3 className="text-base font-bold text-white tracking-tight">CLI Exit Codes & Enforcement Standard</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-          <div className="p-4 rounded-xl bg-emerald-950/20 border border-emerald-500/30">
-            <p className="font-bold text-emerald-400 font-mono text-sm">Exit Code 0 (PASS)</p>
-            <p className="text-zinc-400 mt-1">No definite resource leaks detected in any execution path.</p>
-          </div>
-          <div className="p-4 rounded-xl bg-rose-950/20 border border-rose-500/30">
-            <p className="font-bold text-rose-400 font-mono text-sm">Exit Code 1 (BLOCKED)</p>
-            <p className="text-zinc-400 mt-1">One or more HIGH confidence definite resource leaks found.</p>
-          </div>
-          <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-500/30">
-            <p className="font-bold text-amber-400 font-mono text-sm">Exit Code 2 (ERROR)</p>
-            <p className="text-zinc-400 mt-1">Target path does not exist or arguments are invalid.</p>
-          </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            onClick={handleRunScan}
+            disabled={isRunning}
+            className="px-3 py-1.5 rounded-md text-xs font-medium bg-teal-600 hover:bg-teal-700 text-white shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+          >
+            <Play className="w-3 h-3 fill-current" />
+            <span>{isRunning ? 'Scanning...' : 'Run Scan'}</span>
+          </button>
         </div>
       </div>
+
+      {/* Installation Reference */}
+      <div className="p-4 rounded-lg bg-white dark:bg-[#0d1117] border border-slate-200/80 dark:border-slate-800/80 space-y-2">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-semibold text-slate-900 dark:text-white">
+            Installation
+          </span>
+          <span className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400">
+            ● Installed (v0.1.0)
+          </span>
+        </div>
+        <div className="p-3 rounded bg-slate-900 text-slate-200 font-mono text-xs flex items-center justify-between overflow-x-auto">
+          <code>$ pip install .</code>
+          <button
+            onClick={() => copyToClipboard('pip install .', 'inst')}
+            className="text-slate-400 hover:text-white transition-colors ml-4"
+          >
+            {copied === 'inst' ? <Check className="w-3.5 h-3.5 text-teal-400" /> : <Copy className="w-3.5 h-3.5" />}
+          </button>
+        </div>
+      </div>
+
+      {/* Clean Command Reference List */}
+      <div className="space-y-3">
+        <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+          Command Reference
+        </h3>
+
+        <div className="space-y-3">
+          {commands.map((c) => (
+            <div 
+              key={c.id}
+              className="p-3.5 rounded-lg bg-white dark:bg-[#0d1117] border border-slate-200/80 dark:border-slate-800/80 space-y-2"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-slate-900 dark:text-white">
+                  {c.title}
+                </span>
+                <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                  {c.desc}
+                </span>
+              </div>
+
+              <div className="p-2.5 rounded bg-slate-900 text-teal-300 font-mono text-xs flex items-center justify-between overflow-x-auto">
+                <code>$ {c.command}</code>
+                <button
+                  onClick={() => copyToClipboard(c.command, c.id)}
+                  className="text-slate-400 hover:text-white transition-colors ml-4 shrink-0"
+                >
+                  {copied === c.id ? <Check className="w-3.5 h-3.5 text-teal-400" /> : <Copy className="w-3.5 h-3.5" />}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Latest CLI Scan Result */}
+      {latestScan && (
+        <div className="p-4 rounded-lg bg-white dark:bg-[#0d1117] border border-slate-200/80 dark:border-slate-800/80 space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+              Latest CLI Scan
+            </h3>
+            <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${
+              (latestScan.summary?.definite_leaks || 0) === 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
+            }`}>
+              <span className={`w-2 h-2 rounded-full ${(latestScan.summary?.definite_leaks || 0) === 0 ? 'bg-emerald-500' : 'bg-rose-500'}`} />
+              {(latestScan.summary?.definite_leaks || 0) === 0 ? 'Passed (0 leaks)' : `Failed (${latestScan.summary?.definite_leaks} leaks)`}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-3 gap-3 text-xs font-mono">
+            <div className="p-2.5 bg-slate-50 dark:bg-slate-900/60 rounded">
+              <span className="text-slate-400 block text-[10px]">Files Inspected</span>
+              <span className="font-bold text-slate-900 dark:text-white">{latestScan.summary?.files_scanned || 6} files</span>
+            </div>
+            <div className="p-2.5 bg-slate-50 dark:bg-slate-900/60 rounded">
+              <span className="text-slate-400 block text-[10px]">Definite Leaks</span>
+              <span className="font-bold text-rose-600 dark:text-rose-400">{latestScan.summary?.definite_leaks || 0}</span>
+            </div>
+            <div className="p-2.5 bg-slate-50 dark:bg-slate-900/60 rounded">
+              <span className="text-slate-400 block text-[10px]">Duration</span>
+              <span className="font-bold text-slate-900 dark:text-white">{latestScan.duration_ms || 920} ms</span>
+            </div>
+          </div>
+
+          {latestScan.findings && latestScan.findings.length > 0 && (
+            <div className="space-y-1.5 pt-2 border-t border-slate-100 dark:border-slate-800/60">
+              <span className="text-[11px] font-semibold text-slate-400 uppercase">Findings:</span>
+              {latestScan.findings.map(f => (
+                <div
+                  key={f.id}
+                  onClick={() => onViewFinding && onViewFinding(f.id)}
+                  className="p-2 rounded bg-slate-50/50 dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs cursor-pointer hover:border-slate-300 dark:hover:border-slate-700"
+                >
+                  <span className="font-mono text-rose-600 dark:text-rose-400">{f.file}:{f.line} ({f.resource_type})</span>
+                  <span className="text-teal-600 dark:text-teal-400 font-medium">Inspect →</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

@@ -139,19 +139,19 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
   ];
 
   return (
-    <div className="space-y-12 pb-20">
-      {/* Sticky Top Header Banner */}
-      <div className="bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-slate-800 rounded-xl p-6 sm:p-8 shadow-xs">
+    <div className="max-w-[1320px] w-full mx-auto space-y-10 pb-20">
+      {/* 1. Refined Hero Header Section */}
+      <div className="bg-white dark:bg-[#0d1117] border border-slate-200/80 dark:border-slate-800/80 rounded-xl p-6 sm:p-7 shadow-xs">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md text-xs font-mono font-medium bg-teal-500/10 text-teal-700 dark:text-teal-400 border border-teal-500/20">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-mono font-medium bg-teal-500/10 text-teal-700 dark:text-teal-400 border border-teal-500/20">
               <ShieldCheck className="w-3.5 h-3.5" />
               STATIC ANALYSIS ENGINE
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
               How LeakGuard Works
             </h1>
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed">
+            <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
               Understand how LeakGuard analyzes Python resource lifecycles without executing your application.
             </p>
           </div>
@@ -160,7 +160,7 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
             {onTriggerScan && (
               <button
                 onClick={onTriggerScan}
-                className="px-4 py-2 text-xs font-semibold rounded-lg bg-teal-600 hover:bg-teal-700 text-white shadow-xs transition-colors flex items-center gap-2 cursor-pointer"
+                className="h-9 px-4 py-2 text-xs font-semibold rounded-lg bg-teal-600 hover:bg-teal-700 text-white shadow-xs transition-colors inline-flex items-center gap-2 cursor-pointer"
               >
                 <Zap className="w-3.5 h-3.5" />
                 Run Live Scan
@@ -169,7 +169,7 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
             <a
               href="#quickstart"
               onClick={(e) => { e.preventDefault(); scrollToSection('quickstart'); }}
-              className="px-3.5 py-2 text-xs font-medium rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors"
+              className="h-9 px-4 py-2 text-xs font-medium rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors inline-flex items-center gap-1.5"
             >
               CLI Quick Start
             </a>
@@ -177,70 +177,82 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
-        {/* Main Content Sections (3 cols on desktop) */}
-        <div className="lg:col-span-3 space-y-12 min-w-0">
+      {/* 2. Main Content + Right Sidebar Grid (76% / 24%) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+        {/* Main Content Column (approx 76% on desktop) */}
+        <div className="lg:col-span-9 space-y-12 min-w-0">
 
           {/* SECTION 1: WHAT IS LEAKGUARD? */}
-          <section id="intro" className="scroll-mt-24 space-y-4">
-            <div className="flex items-center gap-2 text-xs font-mono font-semibold text-teal-600 dark:text-teal-400 tracking-wider">
-              <span>SECTION 01</span>
-              <span>•</span>
-              <span>FOUNDATION</span>
+          <section id="intro" className="scroll-mt-24 space-y-5">
+            <div>
+              <div className="text-[11px] font-mono font-semibold tracking-wider text-teal-600 dark:text-teal-400 uppercase">
+                SECTION 01 • FOUNDATION
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mt-1">
+                What is LeakGuard?
+              </h2>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-              What is LeakGuard?
-            </h2>
 
-            <div className="p-4 rounded-lg bg-teal-500/5 border border-teal-500/20 text-slate-800 dark:text-slate-200 text-sm leading-relaxed">
-              <strong className="text-teal-700 dark:text-teal-400">Core Principle: </strong>
+            {/* Core Principle Callout */}
+            <div className="p-4 rounded-lg bg-teal-500/5 dark:bg-teal-950/20 border border-teal-500/20 text-slate-800 dark:text-slate-200 text-sm leading-relaxed max-w-3xl">
+              <strong className="text-teal-700 dark:text-teal-400 font-semibold">Core Principle: </strong>
               LeakGuard is a static analysis tool designed to detect resource lifecycle problems in Python code before they reach production. It analyzes Python source code <strong>without executing the target application</strong>.
             </div>
 
-            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl">
               Python programs commonly acquire operating system and network resources such as:
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div className="p-3.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40">
-                <div className="font-mono text-xs font-semibold text-slate-900 dark:text-white mb-1 flex items-center gap-1.5">
-                  <FileCode className="w-3.5 h-3.5 text-teal-600" />
-                  Files
-                </div>
-                <div className="text-xs text-slate-500 dark:text-slate-400">
-                  <code className="text-teal-600 dark:text-teal-400">open("data.txt")</code> — OS file descriptors and buffers.
-                </div>
-              </div>
-              <div className="p-3.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40">
-                <div className="font-mono text-xs font-semibold text-slate-900 dark:text-white mb-1 flex items-center gap-1.5">
-                  <Activity className="w-3.5 h-3.5 text-blue-500" />
-                  Network Sockets
-                </div>
-                <div className="text-xs text-slate-500 dark:text-slate-400">
-                  <code className="text-blue-500">socket.socket()</code> — TCP/UDP ports and kernel network sockets.
+            {/* Resource Cards (Clean 3-column equal height grid) */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+              <div className="p-4 rounded-lg border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0d1117] flex flex-col justify-between space-y-2">
+                <div>
+                  <div className="font-mono text-xs font-semibold text-slate-900 dark:text-white mb-1.5 flex items-center gap-1.5">
+                    <FileCode className="w-3.5 h-3.5 text-teal-600" />
+                    Files
+                  </div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                    <code className="text-teal-600 dark:text-teal-400 font-mono">open("data.txt")</code> — OS file descriptors and buffers.
+                  </div>
                 </div>
               </div>
-              <div className="p-3.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40">
-                <div className="font-mono text-xs font-semibold text-slate-900 dark:text-white mb-1 flex items-center gap-1.5">
-                  <Cpu className="w-3.5 h-3.5 text-purple-500" />
-                  Database Connections
+
+              <div className="p-4 rounded-lg border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0d1117] flex flex-col justify-between space-y-2">
+                <div>
+                  <div className="font-mono text-xs font-semibold text-slate-900 dark:text-white mb-1.5 flex items-center gap-1.5">
+                    <Activity className="w-3.5 h-3.5 text-blue-500" />
+                    Network Sockets
+                  </div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                    <code className="text-blue-500 font-mono">socket.socket()</code> — TCP/UDP ports and kernel network sockets.
+                  </div>
                 </div>
-                <div className="text-xs text-slate-500 dark:text-slate-400">
-                  <code className="text-purple-500">sqlite3.connect()</code> — Transaction locks and memory pools.
+              </div>
+
+              <div className="p-4 rounded-lg border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0d1117] flex flex-col justify-between space-y-2">
+                <div>
+                  <div className="font-mono text-xs font-semibold text-slate-900 dark:text-white mb-1.5 flex items-center gap-1.5">
+                    <Cpu className="w-3.5 h-3.5 text-purple-500" />
+                    Database Connections
+                  </div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                    <code className="text-purple-500 font-mono">sqlite3.connect()</code> — Transaction locks and memory pools.
+                  </div>
                 </div>
               </div>
             </div>
 
-            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl">
               These resources need to be released correctly. If a resource is acquired but not released on every relevant execution path, the application can eventually experience resource exhaustion.
             </p>
 
-            <div className="bg-slate-900 text-slate-100 rounded-xl p-5 border border-slate-800 space-y-3 font-mono text-xs">
-              <div className="text-slate-400 text-[11px] uppercase tracking-wider">The Fundamental Question</div>
+            {/* Fundamental Question Box */}
+            <div className="bg-slate-900 text-slate-100 rounded-xl p-5 border border-slate-800 space-y-2.5 font-mono text-xs max-w-3xl">
+              <div className="text-slate-400 text-[10.5px] uppercase tracking-wider font-semibold">The Fundamental Question</div>
               <div className="text-slate-300">
                 The important question is not simply: <span className="text-rose-400">"Does close() exist?"</span>
               </div>
-              <div className="text-teal-300 font-semibold text-sm">
+              <div className="text-teal-300 font-semibold text-[13px] pt-0.5">
                 The critical question is: "Can the program reach an exit path without executing close()?"
               </div>
             </div>
@@ -248,15 +260,15 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
 
           {/* SECTION 2: CORE IDEA PIPELINE */}
           <section id="core-idea" className="scroll-mt-24 space-y-4">
-            <div className="flex items-center gap-2 text-xs font-mono font-semibold text-teal-600 dark:text-teal-400 tracking-wider">
-              <span>SECTION 02</span>
-              <span>•</span>
-              <span>PIPELINE</span>
+            <div>
+              <div className="text-[11px] font-mono font-semibold tracking-wider text-teal-600 dark:text-teal-400 uppercase">
+                SECTION 02 • PIPELINE
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mt-1">
+                From Source Code to Leak Finding
+              </h2>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-              From Source Code to Leak Finding
-            </h2>
-            <p className="text-sm text-slate-600 dark:text-slate-300">
+            <p className="text-sm text-slate-600 dark:text-slate-300 max-w-3xl">
               LeakGuard analyzes Python repositories across an 8-stage static pipeline. Click or tap any stage to inspect how the engine evaluates that phase.
             </p>
 
@@ -271,7 +283,7 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
                     className={`p-3 rounded-lg text-left transition-all border cursor-pointer ${
                       isSelected
                         ? 'bg-teal-50 dark:bg-teal-950/40 border-teal-500 ring-1 ring-teal-500/30'
-                        : 'bg-white dark:bg-[#0d1117] border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
+                        : 'bg-white dark:bg-[#0d1117] border-slate-200/80 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-1">
@@ -279,7 +291,7 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
                         {String(idx + 1).padStart(2, '0')}
                       </span>
                       <span className={`text-[9px] font-mono px-1 rounded ${
-                        isSelected ? 'bg-teal-500/20 text-teal-700 dark:text-teal-300' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'
+                        isSelected ? 'bg-teal-500/20 text-teal-700 dark:text-teal-300 font-semibold' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'
                       }`}>
                         {stage.tag}
                       </span>
@@ -293,7 +305,7 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
             </div>
 
             {/* Active Stage Detail Card */}
-            <div className="p-4 rounded-xl border border-teal-500/30 bg-teal-500/5 dark:bg-teal-950/20 space-y-2">
+            <div className="p-4 rounded-xl border border-teal-500/30 bg-teal-500/5 dark:bg-teal-950/20 space-y-1.5">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-mono font-bold text-teal-700 dark:text-teal-400">
                   STAGE {String(activeStageIndex + 1).padStart(2, '0')}: {pipelineStages[activeStageIndex].title}
@@ -311,15 +323,15 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
 
           {/* SECTION 3: STEP 1 - PYTHON SOURCE CODE */}
           <section id="step-source" className="scroll-mt-24 space-y-4">
-            <div className="flex items-center gap-2 text-xs font-mono font-semibold text-teal-600 dark:text-teal-400 tracking-wider">
-              <span>STEP 01</span>
-              <span>•</span>
-              <span>INGESTION</span>
+            <div>
+              <div className="text-[11px] font-mono font-semibold tracking-wider text-teal-600 dark:text-teal-400 uppercase">
+                STEP 01 • INGESTION
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mt-1">
+                01 — Read the Python Source
+              </h2>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-              01 — Read the Python Source
-            </h2>
-            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl">
               LeakGuard receives a Python file or directory as the scan target. The scanner analyzes the source code statically. It does <strong>NOT</strong> execute the application.
             </p>
 
@@ -328,7 +340,7 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
                 <span>CLI Ingestion Commands</span>
                 <button
                   onClick={() => copyToClipboard('leakguard scan demo-project/', 'cmd-scan')}
-                  className="flex items-center gap-1 text-slate-400 hover:text-white"
+                  className="flex items-center gap-1 text-slate-400 hover:text-white transition-colors cursor-pointer"
                 >
                   {copiedIndex === 'cmd-scan' ? <Check className="w-3 h-3 text-teal-400" /> : <Copy className="w-3 h-3" />}
                   <span>{copiedIndex === 'cmd-scan' ? 'Copied' : 'Copy'}</span>
@@ -341,8 +353,8 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
               </div>
             </div>
 
-            <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0d1117] overflow-hidden">
-              <div className="px-4 py-2 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 font-mono">
+            <div className="rounded-lg border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0d1117] overflow-hidden">
+              <div className="px-4 py-2 border-b border-slate-100 dark:border-slate-800/60 flex items-center justify-between text-xs text-slate-500 font-mono">
                 <span>Example Target Function</span>
               </div>
               <div className="p-4 font-mono text-xs leading-relaxed overflow-x-auto">
@@ -360,20 +372,20 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
 
           {/* SECTION 4: STEP 2 - AST ANALYSIS */}
           <section id="step-ast" className="scroll-mt-24 space-y-4">
-            <div className="flex items-center gap-2 text-xs font-mono font-semibold text-teal-600 dark:text-teal-400 tracking-wider">
-              <span>STEP 02</span>
-              <span>•</span>
-              <span>AST PARSING</span>
+            <div>
+              <div className="text-[11px] font-mono font-semibold tracking-wider text-teal-600 dark:text-teal-400 uppercase">
+                STEP 02 • AST PARSING
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mt-1">
+                02 — Parse the Python Code
+              </h2>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-              02 — Parse the Python Code
-            </h2>
-            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl">
               LeakGuard uses Python's AST representation to understand the structure of the source code.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div className="p-3.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0d1117] text-center">
+              <div className="p-3.5 rounded-lg border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0d1117] text-center">
                 <div className="text-xs font-mono text-slate-400 mb-1">Source Code</div>
                 <div className="font-semibold text-sm text-slate-900 dark:text-white font-mono">f = open(...)</div>
               </div>
@@ -381,13 +393,13 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
                 <div className="text-xs font-mono text-teal-600 dark:text-teal-400 mb-1">Python AST</div>
                 <div className="font-semibold text-sm text-teal-700 dark:text-teal-300 font-mono">ast.Assign / Call</div>
               </div>
-              <div className="p-3.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0d1117] text-center">
+              <div className="p-3.5 rounded-lg border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0d1117] text-center">
                 <div className="text-xs font-mono text-slate-400 mb-1">Structured Nodes</div>
                 <div className="font-semibold text-sm text-slate-900 dark:text-white font-mono">AST Program Graph</div>
               </div>
             </div>
 
-            <div className="p-4 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40 text-xs text-slate-600 dark:text-slate-300 leading-relaxed space-y-2">
+            <div className="p-4 rounded-lg border border-slate-200/80 dark:border-slate-800/80 bg-slate-50 dark:bg-slate-900/40 text-xs text-slate-600 dark:text-slate-300 leading-relaxed space-y-2">
               <div className="font-semibold text-slate-900 dark:text-white">Constructs Represented in the AST:</div>
               <ul className="list-disc pl-5 space-y-1 text-slate-600 dark:text-slate-400">
                 <li><strong>Functions:</strong> Function boundaries, signatures, and local scopes.</li>
@@ -403,29 +415,29 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
 
           {/* SECTION 5: STEP 3 - RESOURCE DETECTION */}
           <section id="step-resource" className="scroll-mt-24 space-y-4">
-            <div className="flex items-center gap-2 text-xs font-mono font-semibold text-teal-600 dark:text-teal-400 tracking-wider">
-              <span>STEP 03</span>
-              <span>•</span>
-              <span>ACQUISITION RULES</span>
+            <div>
+              <div className="text-[11px] font-mono font-semibold tracking-wider text-teal-600 dark:text-teal-400 uppercase">
+                STEP 03 • ACQUISITION RULES
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mt-1">
+                03 — Detect Resource Acquisition
+              </h2>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-              03 — Detect Resource Acquisition
-            </h2>
-            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl">
               LeakGuard identifies supported resource acquisition patterns. Current repository documentation states that default tracked resources include:
             </p>
 
-            <ul className="list-disc pl-5 text-sm text-slate-600 dark:text-slate-300 space-y-1">
+            <ul className="list-disc pl-5 text-sm text-slate-600 dark:text-slate-300 space-y-1 max-w-3xl">
               <li><strong>Files:</strong> Standard <code className="font-mono">open(...)</code> builtin calls.</li>
               <li><strong>Network sockets:</strong> <code className="font-mono">socket.socket(...)</code> descriptors.</li>
               <li><strong>SQLite3 connections:</strong> <code className="font-mono">sqlite3.connect(...)</code> database handles.</li>
             </ul>
 
-            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl">
               The exact acquisition patterns are controlled through <code className="font-mono text-teal-600 dark:text-teal-400">leakguard/rules/resources.yaml</code>. This allows resource lifecycle rules to be defined separately from the analysis engine.
             </p>
 
-            <div className="p-4 rounded-lg bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-slate-800 space-y-2 text-xs">
+            <div className="p-4 rounded-lg bg-white dark:bg-[#0d1117] border border-slate-200/80 dark:border-slate-800/80 space-y-2 text-xs">
               <div className="font-semibold text-slate-900 dark:text-white">Example Analyzer Record for `f = open("data.txt")`:</div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 font-mono text-slate-600 dark:text-slate-300">
                 <div className="p-2.5 bg-slate-50 dark:bg-slate-900 rounded">
@@ -446,20 +458,20 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
 
           {/* SECTION 6: STEP 4 - CLEANUP DETECTION */}
           <section id="step-cleanup" className="scroll-mt-24 space-y-4">
-            <div className="flex items-center gap-2 text-xs font-mono font-semibold text-teal-600 dark:text-teal-400 tracking-wider">
-              <span>STEP 04</span>
-              <span>•</span>
-              <span>CLEANUP DETECTION</span>
+            <div>
+              <div className="text-[11px] font-mono font-semibold tracking-wider text-teal-600 dark:text-teal-400 uppercase">
+                STEP 04 • CLEANUP DETECTION
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mt-1">
+                04 — Detect Resource Cleanup
+              </h2>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-              04 — Detect Resource Cleanup
-            </h2>
-            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl">
               LeakGuard checks whether the acquired resource is properly released via explicit close calls or context managers.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="p-4 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0d1117] space-y-2">
+              <div className="p-4 rounded-lg border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0d1117] space-y-2">
                 <div className="text-xs font-mono font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                   <FileCode className="w-3.5 h-3.5 text-blue-500" />
                   Explicit Cleanup Calls
@@ -492,19 +504,19 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
 
           {/* SECTION 7: STEP 5 - CONTROL FLOW */}
           <section id="step-control-flow" className="scroll-mt-24 space-y-4">
-            <div className="flex items-center gap-2 text-xs font-mono font-semibold text-teal-600 dark:text-teal-400 tracking-wider">
-              <span>STEP 05</span>
-              <span>•</span>
-              <span>CONTROL FLOW</span>
+            <div>
+              <div className="text-[11px] font-mono font-semibold tracking-wider text-teal-600 dark:text-teal-400 uppercase">
+                STEP 05 • CONTROL FLOW
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mt-1">
+                05 — Understand Possible Execution Paths
+              </h2>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-              05 — Understand Possible Execution Paths
-            </h2>
-            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl">
               This is one of the most important concepts: simply finding an acquisition and a cleanup call in the same function is insufficient.
             </p>
 
-            <div className="p-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0d1117] space-y-6">
+            <div className="p-6 rounded-xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0d1117] space-y-6">
               <div className="text-center font-mono text-xs font-bold text-slate-900 dark:text-white">
                 PATH BRANCHING DIAGRAM
               </div>
@@ -551,7 +563,7 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-slate-100 dark:border-slate-800 text-xs font-mono">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-slate-100 dark:border-slate-800/60 text-xs font-mono">
                 <div className="p-3 bg-emerald-50/50 dark:bg-emerald-950/20 rounded-lg text-emerald-800 dark:text-emerald-300">
                   <div className="font-bold mb-1">PATH A: SAFE</div>
                   open → condition false → close → exit
@@ -566,15 +578,15 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
 
           {/* SECTION 8: STEP 6 - PATH ANALYSIS */}
           <section id="step-path-analysis" className="scroll-mt-24 space-y-4">
-            <div className="flex items-center gap-2 text-xs font-mono font-semibold text-teal-600 dark:text-teal-400 tracking-wider">
-              <span>STEP 06</span>
-              <span>•</span>
-              <span>PATH ANALYSIS</span>
+            <div>
+              <div className="text-[11px] font-mono font-semibold tracking-wider text-teal-600 dark:text-teal-400 uppercase">
+                STEP 06 • PATH ANALYSIS
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mt-1">
+                06 — Trace the Leaking Path
+              </h2>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-              06 — Trace the Leaking Path
-            </h2>
-            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl">
               LeakGuard's result identifies the exact path through which the resource can escape without cleanup.
             </p>
 
@@ -608,14 +620,14 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
 
           {/* SECTION 9: SAFE VS UNSAFE CODE */}
           <section id="safe-vs-unsafe" className="scroll-mt-24 space-y-4">
-            <div className="flex items-center gap-2 text-xs font-mono font-semibold text-teal-600 dark:text-teal-400 tracking-wider">
-              <span>SECTION 07</span>
-              <span>•</span>
-              <span>CODE COMPARISON</span>
+            <div>
+              <div className="text-[11px] font-mono font-semibold tracking-wider text-teal-600 dark:text-teal-400 uppercase">
+                SECTION 07 • CODE COMPARISON
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mt-1">
+                07 — Safe Code vs Leaking Code
+              </h2>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-              07 — Safe Code vs Leaking Code
-            </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Unsafe Code */}
@@ -665,19 +677,19 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
 
           {/* SECTION 10: STEP 8 - FINDING GENERATION */}
           <section id="step-finding" className="scroll-mt-24 space-y-4">
-            <div className="flex items-center gap-2 text-xs font-mono font-semibold text-teal-600 dark:text-teal-400 tracking-wider">
-              <span>STEP 08</span>
-              <span>•</span>
-              <span>FINDING GENERATION</span>
+            <div>
+              <div className="text-[11px] font-mono font-semibold tracking-wider text-teal-600 dark:text-teal-400 uppercase">
+                STEP 08 • FINDING GENERATION
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mt-1">
+                08 — Turn Analysis into a Finding
+              </h2>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-              08 — Turn Analysis into a Finding
-            </h2>
-            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl">
               When the analyzer determines that a resource can reach an exit without cleanup, LeakGuard produces a finding matching repository terminology:
             </p>
 
-            <div className="p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0d1117] space-y-4 font-mono text-xs">
+            <div className="p-5 rounded-xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0d1117] space-y-4 font-mono text-xs">
               <div className="text-rose-600 dark:text-rose-400 font-bold">
                 [HIGH] DEFINITE RESOURCE LEAK
               </div>
@@ -710,20 +722,20 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
 
           {/* SECTION 11: OUTPUT FORMATS */}
           <section id="step-output" className="scroll-mt-24 space-y-4">
-            <div className="flex items-center gap-2 text-xs font-mono font-semibold text-teal-600 dark:text-teal-400 tracking-wider">
-              <span>STEP 09</span>
-              <span>•</span>
-              <span>OUTPUT FORMATS</span>
+            <div>
+              <div className="text-[11px] font-mono font-semibold tracking-wider text-teal-600 dark:text-teal-400 uppercase">
+                STEP 09 • OUTPUT FORMATS
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mt-1">
+                09 — From Engine to Developer
+              </h2>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-              09 — From Engine to Developer
-            </h2>
-            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl">
               LeakGuard supports machine-readable output across Terminal, JSON, and SARIF specifications.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="p-4 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0d1117] space-y-2">
+              <div className="p-4 rounded-lg border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0d1117] space-y-2">
                 <div className="font-mono text-xs font-bold text-slate-900 dark:text-white">
                   Terminal Output
                 </div>
@@ -735,7 +747,7 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
                 </div>
               </div>
 
-              <div className="p-4 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0d1117] space-y-2">
+              <div className="p-4 rounded-lg border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0d1117] space-y-2">
                 <div className="font-mono text-xs font-bold text-teal-700 dark:text-teal-400">
                   JSON Output
                 </div>
@@ -747,7 +759,7 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
                 </div>
               </div>
 
-              <div className="p-4 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0d1117] space-y-2">
+              <div className="p-4 rounded-lg border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0d1117] space-y-2">
                 <div className="font-mono text-xs font-bold text-purple-700 dark:text-purple-400">
                   SARIF Output
                 </div>
@@ -763,19 +775,19 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
 
           {/* SECTION 12: GITHUB ACTIONS */}
           <section id="step-actions" className="scroll-mt-24 space-y-4">
-            <div className="flex items-center gap-2 text-xs font-mono font-semibold text-teal-600 dark:text-teal-400 tracking-wider">
-              <span>STEP 10</span>
-              <span>•</span>
-              <span>CI INTEGRATION</span>
+            <div>
+              <div className="text-[11px] font-mono font-semibold tracking-wider text-teal-600 dark:text-teal-400 uppercase">
+                STEP 10 • CI INTEGRATION
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mt-1">
+                10 — GitHub Actions Integration
+              </h2>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-              10 — GitHub Actions Integration
-            </h2>
-            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl">
               Continuous integration runs LeakGuard against repository code on push or pull request to provide automated feedback:
             </p>
 
-            <div className="p-4 rounded-lg bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-slate-800 font-mono text-xs text-center space-y-1 text-slate-700 dark:text-slate-300">
+            <div className="p-4 rounded-lg bg-white dark:bg-[#0d1117] border border-slate-200/80 dark:border-slate-800/80 font-mono text-xs text-center space-y-1 text-slate-700 dark:text-slate-300">
               <div>GitHub Repository</div>
               <div className="text-slate-400">↓</div>
               <div>Push / Pull Request</div>
@@ -792,19 +804,19 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
 
           {/* SECTION 13: PRE-COMMIT */}
           <section id="step-precommit" className="scroll-mt-24 space-y-4">
-            <div className="flex items-center gap-2 text-xs font-mono font-semibold text-teal-600 dark:text-teal-400 tracking-wider">
-              <span>STEP 11</span>
-              <span>•</span>
-              <span>INTEGRATION WORKFLOW</span>
+            <div>
+              <div className="text-[11px] font-mono font-semibold tracking-wider text-teal-600 dark:text-teal-400 uppercase">
+                STEP 11 • INTEGRATION WORKFLOW
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mt-1">
+                11 — Pre-commit Integration
+              </h2>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-              11 — Pre-commit Integration
-            </h2>
-            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl">
               Pre-commit helps detect resource lifecycle issues before code is committed to version control.
             </p>
 
-            <div className="p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0d1117] space-y-3 font-mono text-xs">
+            <div className="p-5 rounded-xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0d1117] space-y-3 font-mono text-xs">
               <div className="flex flex-col items-center space-y-1 text-slate-700 dark:text-slate-300">
                 <div>Developer edits code</div>
                 <div className="text-slate-400">↓</div>
@@ -835,19 +847,19 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
 
           {/* SECTION 14: DASHBOARD INTEGRATION */}
           <section id="step-dashboard" className="scroll-mt-24 space-y-4">
-            <div className="flex items-center gap-2 text-xs font-mono font-semibold text-teal-600 dark:text-teal-400 tracking-wider">
-              <span>STEP 12</span>
-              <span>•</span>
-              <span>ARCHITECTURE</span>
+            <div>
+              <div className="text-[11px] font-mono font-semibold tracking-wider text-teal-600 dark:text-teal-400 uppercase">
+                STEP 12 • ARCHITECTURE
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mt-1">
+                12 — How the Dashboard Fits In
+              </h2>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-              12 — How the Dashboard Fits In
-            </h2>
-            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl">
               The dashboard does not replace LeakGuard. The dashboard consumes LeakGuard scan results.
             </p>
 
-            <div className="p-4 rounded-lg bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-slate-800 font-mono text-xs text-center space-y-1 text-slate-700 dark:text-slate-300">
+            <div className="p-4 rounded-lg bg-white dark:bg-[#0d1117] border border-slate-200/80 dark:border-slate-800/80 font-mono text-xs text-center space-y-1 text-slate-700 dark:text-slate-300">
               <div>Existing LeakGuard Engine</div>
               <div className="text-slate-400">↓</div>
               <div>Structured Scan Output</div>
@@ -859,7 +871,7 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
               <div className="text-teal-600 dark:text-teal-400 font-bold">Dashboard UI</div>
             </div>
 
-            <div className="p-4 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40 text-xs text-slate-600 dark:text-slate-300 space-y-2">
+            <div className="p-4 rounded-lg border border-slate-200/80 dark:border-slate-800/80 bg-slate-50 dark:bg-slate-900/40 text-xs text-slate-600 dark:text-slate-300 space-y-2">
               <div className="font-semibold text-slate-900 dark:text-white">Dashboard Responsibilities:</div>
               <ul className="list-disc pl-5 space-y-1 text-slate-600 dark:text-slate-400">
                 <li>Presenting scan results and code viewers.</li>
@@ -872,16 +884,16 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
 
           {/* SECTION 15: COMPLETE FLOW */}
           <section id="complete-flow" className="scroll-mt-24 space-y-4">
-            <div className="flex items-center gap-2 text-xs font-mono font-semibold text-teal-600 dark:text-teal-400 tracking-wider">
-              <span>ARCHITECTURE</span>
-              <span>•</span>
-              <span>END-TO-END</span>
+            <div>
+              <div className="text-[11px] font-mono font-semibold tracking-wider text-teal-600 dark:text-teal-400 uppercase">
+                ARCHITECTURE • END-TO-END
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mt-1">
+                The Complete LeakGuard Flow
+              </h2>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-              The Complete LeakGuard Flow
-            </h2>
 
-            <div className="p-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0d1117] space-y-2 font-mono text-xs overflow-x-auto">
+            <div className="p-6 rounded-xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0d1117] space-y-2 font-mono text-xs overflow-x-auto">
               <div className="flex flex-col items-center space-y-1.5">
                 <div className="w-full max-w-sm p-2 rounded border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-center font-bold text-slate-900 dark:text-white">
                   Python Repository
@@ -924,20 +936,20 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
 
           {/* SECTION 16: LIMITATIONS */}
           <section id="limitations" className="scroll-mt-24 space-y-4">
-            <div className="flex items-center gap-2 text-xs font-mono font-semibold text-amber-600 dark:text-amber-400 tracking-wider">
-              <span>BOUNDARIES</span>
-              <span>•</span>
-              <span>LIMITATIONS</span>
+            <div>
+              <div className="text-[11px] font-mono font-semibold tracking-wider text-amber-600 dark:text-amber-400 uppercase">
+                BOUNDARIES • LIMITATIONS
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mt-1">
+                Know the Boundaries
+              </h2>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-              Know the Boundaries
-            </h2>
-            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl">
               LeakGuard is designed to catch common structural resource lifecycle problems. It is not a replacement for every form of enterprise static-analysis tooling:
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="p-4 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0d1117] space-y-1.5">
+              <div className="p-4 rounded-lg border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0d1117] space-y-1.5">
                 <div className="text-xs font-mono font-bold text-slate-900 dark:text-white">
                   1. Interprocedural Analysis
                 </div>
@@ -946,7 +958,7 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
                 </p>
               </div>
 
-              <div className="p-4 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0d1117] space-y-1.5">
+              <div className="p-4 rounded-lg border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0d1117] space-y-1.5">
                 <div className="text-xs font-mono font-bold text-slate-900 dark:text-white">
                   2. Variable Aliasing
                 </div>
@@ -955,7 +967,7 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
                 </p>
               </div>
 
-              <div className="p-4 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0d1117] space-y-1.5">
+              <div className="p-4 rounded-lg border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0d1117] space-y-1.5">
                 <div className="text-xs font-mono font-bold text-slate-900 dark:text-white">
                   3. Dynamic Python Behavior
                 </div>
@@ -964,7 +976,7 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
                 </p>
               </div>
 
-              <div className="p-4 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0d1117] space-y-1.5">
+              <div className="p-4 rounded-lg border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0d1117] space-y-1.5">
                 <div className="text-xs font-mono font-bold text-slate-900 dark:text-white">
                   4. Concurrency &amp; Threads
                 </div>
@@ -977,20 +989,20 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
 
           {/* SECTION 17: QUICK START */}
           <section id="quickstart" className="scroll-mt-24 space-y-4">
-            <div className="flex items-center gap-2 text-xs font-mono font-semibold text-teal-600 dark:text-teal-400 tracking-wider">
-              <span>GET STARTED</span>
-              <span>•</span>
-              <span>EXECUTION</span>
+            <div>
+              <div className="text-[11px] font-mono font-semibold tracking-wider text-teal-600 dark:text-teal-400 uppercase">
+                GET STARTED • EXECUTION
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mt-1">
+                Run Your First Scan
+              </h2>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-              Run Your First Scan
-            </h2>
 
             <div className="space-y-3">
               <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-900 text-slate-100 font-mono text-xs space-y-3">
                 <div className="flex items-center justify-between text-slate-400 border-b border-slate-800 pb-2">
                   <span>1. Install</span>
-                  <button onClick={() => copyToClipboard('pip install .', 'qs-1')} className="hover:text-white">
+                  <button onClick={() => copyToClipboard('pip install .', 'qs-1')} className="hover:text-white transition-colors cursor-pointer">
                     {copiedIndex === 'qs-1' ? 'Copied' : 'Copy'}
                   </button>
                 </div>
@@ -998,7 +1010,7 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
 
                 <div className="flex items-center justify-between text-slate-400 border-b border-slate-800 pb-2 pt-2">
                   <span>2. Scan</span>
-                  <button onClick={() => copyToClipboard('leakguard scan demo-project/', 'qs-2')} className="hover:text-white">
+                  <button onClick={() => copyToClipboard('leakguard scan demo-project/', 'qs-2')} className="hover:text-white transition-colors cursor-pointer">
                     {copiedIndex === 'qs-2' ? 'Copied' : 'Copy'}
                   </button>
                 </div>
@@ -1006,7 +1018,7 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
 
                 <div className="flex items-center justify-between text-slate-400 border-b border-slate-800 pb-2 pt-2">
                   <span>3. JSON</span>
-                  <button onClick={() => copyToClipboard('leakguard scan . --format json', 'qs-3')} className="hover:text-white">
+                  <button onClick={() => copyToClipboard('leakguard scan . --format json', 'qs-3')} className="hover:text-white transition-colors cursor-pointer">
                     {copiedIndex === 'qs-3' ? 'Copied' : 'Copy'}
                   </button>
                 </div>
@@ -1014,7 +1026,7 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
 
                 <div className="flex items-center justify-between text-slate-400 border-b border-slate-800 pb-2 pt-2">
                   <span>4. SARIF</span>
-                  <button onClick={() => copyToClipboard('leakguard scan . --format sarif', 'qs-4')} className="hover:text-white">
+                  <button onClick={() => copyToClipboard('leakguard scan . --format sarif', 'qs-4')} className="hover:text-white transition-colors cursor-pointer">
                     {copiedIndex === 'qs-4' ? 'Copied' : 'Copy'}
                   </button>
                 </div>
@@ -1044,22 +1056,22 @@ export const HowItWorksPage: React.FC<HowItWorksPageProps> = ({
 
         </div>
 
-        {/* Sticky On This Page TOC (1 col on desktop) */}
-        <div className="hidden lg:block lg:col-span-1 sticky top-24">
-          <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0d1117] space-y-3">
-            <div className="text-[11px] font-mono font-bold text-slate-400 uppercase tracking-wider">
-              On this page
+        {/* Right Sticky Navigation Sidebar (approx 24% on desktop) */}
+        <div className="hidden lg:block lg:col-span-3 sticky top-20">
+          <div className="p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0d1117] space-y-2.5 shadow-2xs">
+            <div className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider px-2 pb-2 border-b border-slate-100 dark:border-slate-800/60">
+              ON THIS PAGE
             </div>
-            <nav className="space-y-1 text-xs">
+            <nav className="space-y-0.5 max-h-[calc(100vh-140px)] overflow-y-auto custom-scrollbar pt-1">
               {navItems.map((item) => {
                 const isActive = activeSection === item.id;
                 return (
                   <button
                     key={item.id}
                     onClick={() => scrollToSection(item.id)}
-                    className={`w-full text-left px-2 py-1 rounded text-[12px] transition-colors truncate cursor-pointer ${
+                    className={`w-full text-left px-2 py-1 rounded text-[11.5px] transition-colors truncate cursor-pointer ${
                       isActive
-                        ? 'font-semibold text-teal-700 dark:text-teal-400 bg-teal-500/10'
+                        ? 'font-semibold text-teal-700 dark:text-teal-300 bg-teal-500/10 border-l-2 border-teal-500 pl-2'
                         : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/40'
                     }`}
                   >

@@ -13,7 +13,9 @@ import { RepositoriesListPage } from './pages/RepositoriesListPage';
 import { HowItWorksPage } from './pages/HowItWorksPage';
 import { AnalyticsPage } from './pages/AnalyticsPage';
 import { ReportsHubPage } from './pages/ReportsHubPage';
-import { IntegrationsHubPage } from './pages/IntegrationsHubPage';
+import { GitHubActionsPage } from './pages/GitHubActionsPage';
+import { PreCommitPage } from './pages/PreCommitPage';
+import { CliPage } from './pages/CliPage';
 import { SettingsPage } from './pages/SettingsPage';
 
 // Admin Pages
@@ -213,12 +215,15 @@ export const App: React.FC = () => {
         return { title: 'Analytics', subtitle: 'Code health metrics and resolution trends.' };
       case '/reports':
         return { title: 'Reports', subtitle: 'Export JSON and SARIF static analysis diagnostics.' };
+      case '/integrations/github-actions':
       case '/actions':
-        return { title: 'GitHub Actions', subtitle: 'Automate static checks on pull requests and commits.' };
+        return { title: 'GitHub Actions', subtitle: 'Run LeakGuard automatically when code is pushed or a pull request is opened.' };
+      case '/integrations/pre-commit':
       case '/precommit':
-        return { title: 'Pre-commit', subtitle: 'Inspect staged Python files before git commit.' };
+        return { title: 'Pre-commit', subtitle: 'Check your Python files before they are committed.' };
+      case '/integrations/cli':
       case '/cli':
-        return { title: 'CLI', subtitle: 'Direct command-line execution and local development.' };
+        return { title: 'CLI', subtitle: 'Run LeakGuard directly from your terminal.' };
       case '/settings':
         return { title: 'Settings', subtitle: 'Manage workspace configuration and scanner options.' };
       default:
@@ -319,7 +324,7 @@ export const App: React.FC = () => {
               onTriggerScan={() => setIsScanModalOpen(true)}
             />
 
-            <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto">
+            <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-[1320px] w-full mx-auto">
               {loading ? (
                 <LoadingSkeleton />
               ) : (
@@ -339,7 +344,13 @@ export const App: React.FC = () => {
                     <ScansHistoryPage
                       scans={scans}
                       onTriggerScan={() => setIsScanModalOpen(true)}
-                      onSelectScan={() => setIsScanModalOpen(true)}
+                      onSelectScan={(scan) => {
+                        if (scan.findings && scan.findings.length > 0) {
+                          handleSelectFinding(scan.findings[0].id);
+                        } else {
+                          navigateTo('/findings');
+                        }
+                      }}
                     />
                   )}
 
@@ -386,8 +397,25 @@ export const App: React.FC = () => {
                     <ReportsHubPage />
                   )}
 
-                  {(currentPath === '/actions' || currentPath === '/precommit' || currentPath === '/cli') && (
-                    <IntegrationsHubPage />
+                  {(currentPath === '/integrations/github-actions' || currentPath === '/actions') && (
+                    <GitHubActionsPage
+                      onTriggerScan={() => setIsScanModalOpen(true)}
+                      onViewFinding={handleSelectFinding}
+                    />
+                  )}
+
+                  {(currentPath === '/integrations/pre-commit' || currentPath === '/precommit') && (
+                    <PreCommitPage
+                      onTriggerScan={() => setIsScanModalOpen(true)}
+                      onViewFinding={handleSelectFinding}
+                    />
+                  )}
+
+                  {(currentPath === '/integrations/cli' || currentPath === '/cli') && (
+                    <CliPage
+                      onTriggerScan={() => setIsScanModalOpen(true)}
+                      onViewFinding={handleSelectFinding}
+                    />
                   )}
 
                   {currentPath === '/settings' && (
@@ -406,6 +434,10 @@ export const App: React.FC = () => {
         onClose={() => setIsScanModalOpen(false)}
         onScanComplete={handleScanCompleted}
         onViewFinding={handleSelectFinding}
+        onNavigate={(path) => {
+          setIsScanModalOpen(false);
+          navigateTo(path);
+        }}
       />
 
       {/* Search Modal */}
