@@ -3,6 +3,7 @@ LeakGuard Web Dashboard & API Server Launcher
 Run with: python run_dashboard.py
 """
 import sys
+# pyrefly: ignore [missing-import]
 import uvicorn
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -16,4 +17,4 @@ if __name__ == "__main__":
     print("📚 API Documentation at:        http://127.0.0.1:8000/docs")
     print("=" * 65)
     
-    uvicorn.run("api.main:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("api.main:app", host="[IP_ADDRESS]", port=8000, reload=True)

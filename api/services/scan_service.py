@@ -137,18 +137,11 @@ class ScanService:
 
     def _init_default_scans(self):
         try:
-            if os.path.exists("sample-repo-python"):
+            if not _SCANS_STORE:
                 self.run_scan(ScanRequest(
-                    target_path="sample-repo-python",
-                    project_name="Sample Python Repository",
+                    target_path=".",
+                    project_name="Jyotiransh07/VH26-ECS-Infinix",
                     branch="main",
-                    config_path="leakguard/rules/resources.yaml"
-                ))
-            if os.path.exists("demo-project"):
-                self.run_scan(ScanRequest(
-                    target_path="demo-project",
-                    project_name="Demo Project",
-                    branch="feature/leak-fixes",
                     config_path="leakguard/rules/resources.yaml"
                 ))
         except Exception as e:
@@ -163,12 +156,16 @@ class ScanService:
         all_findings: List[Finding] = []
         files_scanned = 0
         
+        exclude_dirs = {'.git', 'node_modules', 'venv', '.venv', '__pycache__', 'frontend', 'dist', 'build'}
+        
         if os.path.isfile(target):
             if target.endswith('.py'):
                 all_findings.extend(analyzer.analyze_file(target))
                 files_scanned = 1
         elif os.path.isdir(target):
-            for root, _, files in os.walk(target):
+            for root, dirs, files in os.walk(target):
+                # Modify dirs in-place to skip excluded directories
+                dirs[:] = [d for d in dirs if d not in exclude_dirs]
                 for file in files:
                     if file.endswith('.py'):
                         filepath = os.path.join(root, file)
