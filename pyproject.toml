@@ -12,7 +12,10 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
-    "pyyaml"
+    "pyyaml",
+    "fastapi",
+    "uvicorn",
+    "pydantic"
 ]
 
 [project.scripts]
@@ -23,3 +26,6 @@ dev = [
     "pytest",
     "pytest-cov"
 ]
+
+[tool.setuptools.packages.find]
+include = ["leakguard*", "api*"]

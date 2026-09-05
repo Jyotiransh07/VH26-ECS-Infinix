@@ -413,8 +413,32 @@ export const App: React.FC = () => {
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
         onSelect={(secId) => {
-          navigateTo(secId.startsWith('/') ? secId : `/${secId}`);
+          // Map documentation section IDs to actual dashboard routes
+          const actionsIds = ['github-actions', 'composite-action', 'workflow-setup', 'pr-blocking'];
+          const precommitIds = ['pre-commit', 'hook-config', 'hook-install'];
+          const reportsIds = ['reports', 'sarif-standard', 'github-security-tab', 'console-output'];
+          const rulesIds = ['config-rules', 'default-rules', 'custom-rules', 'rule-syntax'];
+          
+          let targetRoute = '/how-it-works'; // Default fallback
+          
+          if (actionsIds.includes(secId)) targetRoute = '/actions';
+          else if (precommitIds.includes(secId)) targetRoute = '/precommit';
+          else if (reportsIds.includes(secId)) targetRoute = '/reports';
+          else if (rulesIds.includes(secId)) targetRoute = '/rules';
+          else if (secId.includes('api') || secId.includes('endpoint')) targetRoute = '/settings';
+          else if (secId.includes('cfg') || secId === 'branch-traversal') targetRoute = '/workflow';
+          
+          navigateTo(targetRoute);
           setIsSearchOpen(false);
+          
+          // Attempt to scroll if the page defines matching element IDs
+          setTimeout(() => {
+            const el = document.getElementById(secId);
+            if (el) {
+              const y = el.getBoundingClientRect().top + window.pageYOffset - 80;
+              window.scrollTo({ top: y, behavior: 'smooth' });
+            }
+          }, 100);
         }}
         searchIndex={searchIndex}
       />
