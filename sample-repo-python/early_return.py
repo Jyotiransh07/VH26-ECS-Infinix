@@ -3,8 +3,7 @@ def process_data(data_path):
     
     if not data_path:
         print("No path provided")
-        return  # LEAK: Early return skips f.close()
-        
+        return  
     data = f.read()
     print("Processed:", len(data))
     f.close()
